@@ -1,5 +1,6 @@
 package br.com.sousinhacode.service;
 
+import br.com.sousinhacode.dto.PersonDTO;
 import br.com.sousinhacode.exception.ResourceNotFoundException;
 import br.com.sousinhacode.model.Person;
 import br.com.sousinhacode.repository.PersonRepository;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static br.com.sousinhacode.mapper.ObjectMapper.parseListObject;
+import static br.com.sousinhacode.mapper.ObjectMapper.parseObject;
+
 @Service
 public class PersonService {
 
@@ -18,26 +22,29 @@ public class PersonService {
     @Autowired
     private PersonRepository repository;
 
-    public List<Person> findAll() {
+    public List<PersonDTO> findAll() {
         LOGGER.info("Finding all People!");
 
-        return repository.findAll();
+        return parseListObject(repository.findAll(), PersonDTO.class);
     }
 
-    public Person findById(Long id) {
+    public PersonDTO findById(Long id) {
         LOGGER.info("Finding one Person!");
 
-        return repository.findById(id)
+        var entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+        return parseObject(entity, PersonDTO.class);
     }
 
-    public Person create(Person person) {
+    public PersonDTO create(PersonDTO person) {
         LOGGER.info("Creating one Person!");
 
-        return repository.save(person);
+        var entity = parseObject(person, Person.class);
+
+        return parseObject(repository.save(entity), PersonDTO.class);
     }
 
-    public Person update(Person person) {
+    public PersonDTO update(PersonDTO person) {
         LOGGER.info("Updating one Person!");
 
         Person entity = repository.findById(person.getId())
@@ -47,7 +54,7 @@ public class PersonService {
         entity.setAddress(person.getAddress());
         entity.setGender(person.getGender());
 
-        return repository.save(person);
+        return parseObject(repository.save(entity), PersonDTO.class);
     }
 
     public void delete(Long id) {
@@ -55,7 +62,6 @@ public class PersonService {
 
         Person entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
-
         repository.delete(entity);
     }
 }
