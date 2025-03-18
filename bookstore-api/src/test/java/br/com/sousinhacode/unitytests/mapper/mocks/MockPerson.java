@@ -1,6 +1,6 @@
 package br.com.sousinhacode.unitytests.mapper.mocks;
 
-import br.com.sousinhacode.dto.PersonDTO;
+import br.com.sousinhacode.dto.v1.PersonDTO;
 import br.com.sousinhacode.model.Person;
 
 import java.util.ArrayList;
