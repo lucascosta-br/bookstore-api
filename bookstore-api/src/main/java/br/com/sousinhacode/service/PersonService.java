@@ -1,7 +1,9 @@
 package br.com.sousinhacode.service;
 
-import br.com.sousinhacode.dto.PersonDTO;
+import br.com.sousinhacode.dto.v1.PersonDTO;
+import br.com.sousinhacode.dto.v2.PersonDTOV2;
 import br.com.sousinhacode.exception.ResourceNotFoundException;
+import br.com.sousinhacode.mapper.custom.PersonMapper;
 import br.com.sousinhacode.model.Person;
 import br.com.sousinhacode.repository.PersonRepository;
 import org.slf4j.Logger;
@@ -21,6 +23,9 @@ public class PersonService {
 
     @Autowired
     private PersonRepository repository;
+
+    @Autowired
+    private PersonMapper converter;
 
     public List<PersonDTO> findAll() {
         LOGGER.info("Finding all People!");
@@ -42,6 +47,14 @@ public class PersonService {
         var entity = parseObject(person, Person.class);
 
         return parseObject(repository.save(entity), PersonDTO.class);
+    }
+
+    public PersonDTOV2 createV2(PersonDTOV2 person) {
+        LOGGER.info("Creating one Person V2!");
+
+        var entity = converter.convertDtoToEntity(person);
+
+        return converter.convertEntityToDto(repository.save(entity));
     }
 
     public PersonDTO update(PersonDTO person) {
