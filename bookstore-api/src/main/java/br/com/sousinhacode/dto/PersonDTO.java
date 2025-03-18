@@ -1,4 +1,4 @@
-package br.com.sousinhacode.dto.v1;
+package br.com.sousinhacode.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
