@@ -1,5 +1,6 @@
 package br.com.sousinhacode.exception.handler;
 
+import br.com.sousinhacode.exception.RequiredObjectIsNullException;
 import br.com.sousinhacode.exception.ResourceNotFoundException;
 import br.com.sousinhacode.exception.ExceptionResponse;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,16 @@ public class CustomEntityResponseHandler extends ResponseEntityExceptionHandler 
                 exception.getMessage(),
                 request.getDescription(false));
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RequiredObjectIsNullException.class)
+    public final ResponseEntity<ExceptionResponse> handleBadRequestException(Exception exception,
+                                                                           WebRequest request) {
+        ExceptionResponse response = new ExceptionResponse(
+                new Date(),
+                exception.getMessage(),
+                request.getDescription(false));
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
 
