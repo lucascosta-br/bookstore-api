@@ -3,7 +3,7 @@ package br.com.sousinhacode.model;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -20,7 +20,8 @@ public class Book implements Serializable {
     private String author;
 
     @Column(name = "launch_date", nullable = false)
-    private LocalDateTime launchDate;
+    @Temporal(TemporalType.DATE)
+    private Date launchDate;
 
     @Column(nullable = false)
     private Double price;
@@ -47,11 +48,11 @@ public class Book implements Serializable {
         this.author = author;
     }
 
-    public LocalDateTime getLaunchDate() {
+    public Date getLaunchDate() {
         return launchDate;
     }
 
-    public void setLaunchDate(LocalDateTime launchDate) {
+    public void setLaunchDate(Date launchDate) {
         this.launchDate = launchDate;
     }
 
