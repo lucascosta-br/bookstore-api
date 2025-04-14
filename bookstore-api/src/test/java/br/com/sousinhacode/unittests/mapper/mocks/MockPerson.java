@@ -1,4 +1,4 @@
-package br.com.sousinhacode.unitytests.mapper.mocks;
+package br.com.sousinhacode.unittests.mapper.mocks;
 
 import br.com.sousinhacode.dto.PersonDTO;
 import br.com.sousinhacode.model.Person;

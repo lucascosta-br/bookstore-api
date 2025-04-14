@@ -1,10 +1,11 @@
-package br.com.sousinhacode.service;
+package br.com.sousinhacode.unittests.service;
 
 import br.com.sousinhacode.dto.BookDTO;
 import br.com.sousinhacode.exception.RequiredObjectIsNullException;
 import br.com.sousinhacode.model.Book;
 import br.com.sousinhacode.repository.BookRepository;
-import br.com.sousinhacode.unitytests.mapper.mocks.MockBook;
+import br.com.sousinhacode.service.BookService;
+import br.com.sousinhacode.unittests.mapper.mocks.MockBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -88,12 +89,11 @@ class BookServiceTest {
 
     @Test
     void create() {
-        Book book = input.mockEntity(1);
-        Book persisted = book;
-        persisted.setId(1L);
-
         BookDTO dto = input.mockDTO(1);
-        when(repository.save(book)).thenReturn(persisted);
+
+        Book entity = input.mockEntity(1);
+
+        when(repository.save(any(Book.class))).thenReturn(entity);
 
         var result = service.create(dto);
 

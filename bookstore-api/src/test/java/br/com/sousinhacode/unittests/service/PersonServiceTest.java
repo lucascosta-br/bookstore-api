@@ -1,10 +1,11 @@
-package br.com.sousinhacode.service;
+package br.com.sousinhacode.unittests.service;
 
 import br.com.sousinhacode.dto.PersonDTO;
 import br.com.sousinhacode.exception.RequiredObjectIsNullException;
 import br.com.sousinhacode.model.Person;
 import br.com.sousinhacode.repository.PersonRepository;
-import br.com.sousinhacode.unitytests.mapper.mocks.MockPerson;
+import br.com.sousinhacode.service.PersonService;
+import br.com.sousinhacode.unittests.mapper.mocks.MockPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

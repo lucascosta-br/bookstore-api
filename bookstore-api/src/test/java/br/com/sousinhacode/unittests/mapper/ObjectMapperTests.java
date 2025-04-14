@@ -1,8 +1,8 @@
-package br.com.sousinhacode.unitytests.mapper;
+package br.com.sousinhacode.unittests.mapper;
 
 import br.com.sousinhacode.dto.PersonDTO;
 import br.com.sousinhacode.model.Person;
-import br.com.sousinhacode.unitytests.mapper.mocks.MockPerson;
+import br.com.sousinhacode.unittests.mapper.mocks.MockPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
