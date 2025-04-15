@@ -9,11 +9,14 @@ import br.com.sousinhacode.repository.BookRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-import static br.com.sousinhacode.mapper.ObjectMapper.parseListObject;
 import static br.com.sousinhacode.mapper.ObjectMapper.parseObject;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -26,12 +29,26 @@ public class BookService {
     @Autowired
     private BookRepository repository;
 
-    public List<BookDTO> findAll() {
+    @Autowired
+    PagedResourcesAssembler<BookDTO> assembler;
+
+    public PagedModel<EntityModel<BookDTO>> findAll(Pageable pageable) {
         LOGGER.info("Finding all Books!");
 
-        var books = parseListObject(repository.findAll(), BookDTO.class);
-        books.forEach(this::addHateoasLinks);
-        return books;
+        var book = repository.findAll(pageable);
+        var booksWithLinks = book.map(b -> {
+            var dto = parseObject(b, BookDTO.class);
+            addHateoasLinks(dto);
+            return dto;
+        });
+
+        Link findAllLink = WebMvcLinkBuilder
+                .linkTo(WebMvcLinkBuilder
+                        .methodOn(BookController.class)
+                        .findAll(pageable.getPageNumber(), pageable.getPageSize(),
+                                String.valueOf(pageable.getSort()))).withSelfRel();
+
+        return assembler.toModel(booksWithLinks, findAllLink);
 
     }
 
@@ -84,7 +101,7 @@ public class BookService {
 
     private void addHateoasLinks(BookDTO dto) {
         dto.add(linkTo(methodOn(BookController.class).findById(dto.getId())).withSelfRel().withType("GET"));
-        dto.add(linkTo(methodOn(BookController.class).findAll()).withRel("findAll").withType("GET"));
+        dto.add(linkTo(methodOn(BookController.class).findAll(0, 12, "ASC")).withRel("findAll").withType("GET"));
         dto.add(linkTo(methodOn(BookController.class).create(dto)).withRel("create").withType("POST"));
         dto.add(linkTo(methodOn(BookController.class).update(dto)).withRel("update").withType("PUT"));
         dto.add(linkTo(methodOn(BookController.class).delete(dto.getId())).withRel("delete").withType("DELETE"));
