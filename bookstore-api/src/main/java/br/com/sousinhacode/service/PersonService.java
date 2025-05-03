@@ -6,8 +6,7 @@ import br.com.sousinhacode.exception.BadRequestException;
 import br.com.sousinhacode.exception.FileStorageException;
 import br.com.sousinhacode.exception.RequiredObjectIsNullException;
 import br.com.sousinhacode.exception.ResourceNotFoundException;
-import br.com.sousinhacode.file.exporter.MediaTypes;
-import br.com.sousinhacode.file.exporter.contract.FileExporter;
+import br.com.sousinhacode.file.exporter.contract.PersonExporter;
 import br.com.sousinhacode.file.exporter.factory.FileExporterFactory;
 import br.com.sousinhacode.file.importer.contract.FileImporter;
 import br.com.sousinhacode.file.importer.factory.FileImporterFactory;
@@ -75,8 +74,23 @@ public class PersonService {
                 .map(person -> parseObject(person, PersonDTO.class))
                 .getContent();
         try {
-            FileExporter exporter = this.exporter.getExporter(acceptHeader);
-            return exporter.exportFile(people);
+            PersonExporter exporter = this.exporter.getExporter(acceptHeader);
+            return exporter.exportPeople(people);
+        } catch (Exception e) {
+            throw new RuntimeException("Error during file export!", e);
+        }
+    }
+
+    public Resource exportPerson(Long id, String acceptHeader) {
+        LOGGER.info("Exporting data of one Person!");
+
+        var person = repository.findById(id)
+                .map(entity -> parseObject(entity, PersonDTO.class))
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+
+        try {
+            PersonExporter exporter = this.exporter.getExporter(acceptHeader);
+            return exporter.exportPerson(person);
         } catch (Exception e) {
             throw new RuntimeException("Error during file export!", e);
         }
