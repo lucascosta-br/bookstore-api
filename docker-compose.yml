@@ -1,0 +1,38 @@
+services:
+  db:
+    image: mysql:9.3.0
+    restart: always
+    environment:
+      TZ: America/Bahia
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: admin123
+      MYSQL_DATABASE: bookstore_db
+    ports:
+      - "3308:3306"
+    expose:
+      - 3306
+    networks:
+      - erudio-network
+
+  rest-with-spring-boot:
+    image: lucasdsousacosta/rest-with-spring-boot
+    restart: always
+    build: ./bookstore-api
+    working_dir: /bookstore-api
+    environment:
+      TZ: America/Bahia
+      SPRING.DATASOURCE.URL: jdbc:mysql://db:3306/bookstore_db?useTimezone=true&serverTimezone=UTC
+      SPRING.DATASOURCE.USERNAME: root
+      SPRING.DATASOURCE.PASSWORD: admin123
+    command: mvn spring-boot:run
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    networks:
+      - erudio-network
+
+networks:
+  erudio-network:
+    driver: bridge
